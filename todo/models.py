@@ -3,6 +3,8 @@
 from dataclasses import dataclass, asdict
 from datetime import datetime
 
+PRIORITIES = ("high", "normal", "low")
+
 
 @dataclass
 class TodoItem:
@@ -11,6 +13,7 @@ class TodoItem:
     id: int
     title: str
     done: bool = False
+    priority: str = "normal"  # high / normal / low
     created_at: str = ""
     finished_at: str = ""
 

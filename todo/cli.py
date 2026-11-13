@@ -3,7 +3,7 @@
 import argparse
 from datetime import datetime
 
-from todo.models import TodoItem
+from todo.models import TodoItem, PRIORITIES
 from todo.storage import Storage
 
 
@@ -11,16 +11,17 @@ def next_id(items: list[TodoItem]) -> int:
     return (max(item.id for item in items) + 1) if items else 1
 
 
-def add(storage: Storage, title: str) -> None:
+def add(storage: Storage, title: str, priority: str = "normal") -> None:
     items = storage.load()
     item = TodoItem(
         id=next_id(items),
         title=title,
+        priority=priority,
         created_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     )
     items.append(item)
     storage.save(items)
-    print(f"已添加：[{item.id}] {item.title}")
+    print(f"已添加：[{item.id}] ({item.priority}) {item.title}")
 
 
 def list_items(storage: Storage, show_all: bool = True) -> None:
@@ -33,7 +34,7 @@ def list_items(storage: Storage, show_all: bool = True) -> None:
     for item in items:
         status = "✓" if item.done else " "
         suffix = f"（完成于 {item.finished_at}）" if item.done else ""
-        print(f"[{status}] #{item.id} {item.title}{suffix}")
+        print(f"[{status}] ({item.priority}) #{item.id} {item.title}{suffix}")
 
 
 def done(storage: Storage, item_id: int) -> None:
@@ -63,6 +64,8 @@ def main() -> None:
 
     p_add = sub.add_parser("add", help="添加待办事项")
     p_add.add_argument("title", help="事项内容")
+    p_add.add_argument("--priority", choices=PRIORITIES, default="normal",
+                       help="优先级：high / normal / low")
 
     sub.add_parser("list", help="查看全部事项")
     sub.add_parser("pending", help="查看未完成事项")
@@ -77,7 +80,7 @@ def main() -> None:
     storage = Storage()
 
     if args.command == "add":
-        add(storage, args.title)
+        add(storage, args.title, args.priority)
     elif args.command == "list":
         list_items(storage)
     elif args.command == "pending":
