@@ -34,6 +34,10 @@ class TestTodo(unittest.TestCase):
         self.assertTrue(item.done)
         self.assertTrue(item.finished_at)
 
+    def test_priority_default(self) -> None:
+        item = TodoItem(id=1, title="优先级", created_at="2026-11-13 10:00:00")
+        self.assertEqual(item.priority, "normal")
+
 
 if __name__ == "__main__":
     unittest.main()
