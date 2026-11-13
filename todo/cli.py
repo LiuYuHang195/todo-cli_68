@@ -33,7 +33,7 @@ def list_items(storage: Storage, show_all: bool = True) -> None:
     for item in items:
         status = "✓" if item.done else " "
         suffix = f"（完成于 {item.finished_at}）" if item.done else ""
-        print(f"[{status}] {item.id}. {item.title}{suffix}")
+        print(f"[{status}] #{item.id} {item.title}{suffix}")
 
 
 def done(storage: Storage, item_id: int) -> None:
